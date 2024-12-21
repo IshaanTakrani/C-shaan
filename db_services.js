@@ -8,23 +8,45 @@ const supabaseAnonKey = process.env.SUPABASE_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-databaseService = {
-	fetchBalance: async (id) => {
-		const { data, error } = await supabase
-			.from('userdata')
-			.select('balance')
-			.eq('userID', id)
-			.single();
-		return data;
-	},
+// databaseService = {
+// 	fetchBalance: async (id) => {
+// 		const { data, error } = await supabase
+// 			.from('userdata')
+// 			.select('balance')
+// 			.eq('userID', id)
+// 			.single();
+// 		return data;
+// 	},
 
-	updateBalance: async (id, username, newAmount) => {
-		const { data, error } = await supabase
-			.from('userdata')
-			.upsert({ userID: id, username: username, balance: newAmount })
-			.select();
-	},
-};
+// 	updateBalance: async (id, username, newAmount) => {
+// 		const { data, error } = await supabase
+// 			.from('userdata')
+// 			.upsert({ userID: id, username: username, balance: newAmount })
+// 			.select();
+// 	},
+
+// 	isInDB: async (id) => {
+// 		const { data, error } = await supabase
+// 			.from('userdata')
+// 			.select('*')
+// 			.eq('userID', id)
+// 			.single();
+// 		if (data != null) {
+// 			return true;
+// 		} else {
+// 			return false;
+// 		}
+// 	},
+// };
+
+// try {
+// 	databaseService.isInDB('573901384718483466').then((data) => {
+// 		console.log(data);
+// 	});
+// 	// console.log(isInDB);
+// } catch (e) {
+// 	console.log(e);
+// }
 
 // databaseService
 // 	.updateBalance('573901384718483466', 'eyechai', 509)
@@ -51,5 +73,18 @@ module.exports = {
 			.from('userdata')
 			.upsert({ userID: id, username: username, balance: newAmount })
 			.select();
+	},
+
+	isInDB: async (id) => {
+		const { data, error } = await supabase
+			.from('userdata')
+			.select('*')
+			.eq('userID', id)
+			.single();
+		if (data != null) {
+			return true;
+		} else {
+			return false;
+		}
 	},
 };

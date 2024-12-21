@@ -44,7 +44,7 @@ module.exports = {
 			);
 		}
 
-		// simulare dice rolls using Die object
+		// simulate dice rolls using Die object
 		let die = new Die(6);
 		let houseRoll = die.roll();
 		let playerRoll = die.roll();
@@ -53,6 +53,28 @@ module.exports = {
 		 * handles return message based on came outcome,
 		 * calls function to update player's balance in db
 		 */
+
+		const embedSkeleton = {
+			color: 0x46ba2a,
+			title: `${interaction.user.username}`,
+			fields: [
+				{
+					name: 'Results:',
+					value: '',
+				},
+				{
+					name: 'Balance Changes:',
+					value: '',
+				},
+			],
+			thumbnail: {
+				url: interaction.user.displayAvatarURL({
+					dynamic: true,
+					size: 4096,
+				}),
+			},
+		};
+
 		if (Number(syncBalance) < bet) {
 			await interaction.reply('Your balance is too low!');
 		} else if (houseRoll >= playerRoll) {
@@ -61,18 +83,25 @@ module.exports = {
 				interaction.user.username,
 				syncBalance - bet
 			);
-			await interaction.reply(
-				`house rolled ${houseRoll} and player rolled ${playerRoll}, house wins!`
-			);
+			// edit embed skeleton
+			embedSkeleton.color = 0xba2a2a;
+			embedSkeleton.fields[0].value = `house rolled ${houseRoll} and ${interaction.user.username} rolled ${playerRoll}\n House wins`;
+			embedSkeleton.fields[1].value = `Old balance: ${syncBalance} :coin:\nNew balance: ${
+				syncBalance - bet
+			} :coin:`;
+			await interaction.reply({ embeds: [embedSkeleton] });
 		} else {
 			databaseService.updateBalance(
 				interaction.user.id,
 				interaction.user.username,
 				syncBalance + bet
 			);
-			await interaction.reply(
-				`house rolled ${houseRoll} and player rolled ${playerRoll}, player wins!`
-			);
+			// edit embed skeleton
+			embedSkeleton.fields[0].value = `house rolled ${houseRoll} and ${interaction.user.username} rolled ${playerRoll}\n ${interaction.user.username} wins!`;
+			embedSkeleton.fields[1].value = `Old balance: ${syncBalance} :coin:\nNew balance: ${
+				syncBalance + bet
+			} :coin:`;
+			await interaction.reply({ embeds: [embedSkeleton] });
 		}
 	},
 };

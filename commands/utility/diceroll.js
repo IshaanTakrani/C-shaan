@@ -30,13 +30,11 @@ module.exports = {
 		let syncBalance;
 		let bet = interaction.options.getInteger('bet');
 
-		/** 
+		/**
 		 * fetches balance from database given user id,
 		 * assigns syncBalance to this value
-		*/
-			
-			
-		*/
+		 */
+
 		try {
 			const balance = await databaseService.fetchBalance(interaction.user.id);
 			syncBalance = balance.balance;
@@ -52,7 +50,7 @@ module.exports = {
 		let playerRoll = die.roll();
 
 		/**
-		 * handles return message based on came outcome, 
+		 * handles return message based on came outcome,
 		 * calls function to update player's balance in db
 		 */
 		if (Number(syncBalance) < bet) {
